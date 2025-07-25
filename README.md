@@ -1,98 +1,76 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Lumina Staff Suite - Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Tech Stack](https://img.shields.io/badge/tech-NestJS%20%7C%20TypeScript%20%7C%20PostgreSQL-blueviolet)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This repository contains the backend API for Lumina Staff Suite. It's a modern, scalable server-side application built with NestJS, focusing on SOLID principles, a clean modular architecture, and data persistence with PostgreSQL and TypeORM.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 🔗 Live API Endpoint
 
-## Project setup
+The API is hosted on Render: **[https://your-backend-api-url.onrender.com/](https://your-backend-api-url.onrender.com/)**
 
-```bash
-$ npm install
-```
+*(Note: The first request might take up to 30 seconds as the free-tier service spins down after inactivity.)*
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+### 🚀 Features
 
-# watch mode
-$ npm run start:dev
+* **📦 Modular Architecture:** The application is structured into logical modules (e.g., `EmployeesModule`) for better organization and scalability, following NestJS best practices.
+* **🛡️ Robust RESTful API:** A complete set of endpoints for managing employees (`GET`, `POST`, `PATCH`, `DELETE`).
+* **✅ Data Validation:** Automatic validation of incoming data using DTOs (Data Transfer Objects) with `class-validator` and a global `ValidationPipe`.
+* **🐘 PostgreSQL Database:** Uses a powerful relational database for data persistence.
+* **🔄 TypeORM Integration:** Leverages TypeORM for elegant and type-safe database interactions.
+* **🔧 Service-Oriented:** A clean separation of concerns with a "Thin Controller, Fat Service" approach, where all business logic is encapsulated in services.
+* **🔒 Environment-Based Configuration:** Securely manages configuration for different environments (development, production) using a `.env` file.
 
-# production mode
-$ npm run start:prod
-```
+---
 
-## Run tests
+### 🛠️ Tech Stack
 
-```bash
-# unit tests
-$ npm run test
+* **Framework:** NestJS
+* **Language:** TypeScript
+* **Database:** PostgreSQL
+* **ORM:** TypeORM
+* **Data Validation:** class-validator, class-transformer
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
-```
+### 🏁 Getting Started
 
-## Deployment
+To run this project locally, follow these steps:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/toyo12312/lumina-staff-suite-backend.git](https://github.com/toyo12312/lumina-staff-suite-backend.git)
+    cd lumina-staff-suite-backend
+    ```
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+3.  **Set up environment variables:**
+    Create a `.env` file in the root of the project by copying the example file:
+    ```bash
+    cp .env.example .env
+    ```
+    Open the new `.env` file and configure your `DATABASE_URL` and `PORT`. The `DATABASE_URL` should follow this format:
+    `postgresql://USER:PASSWORD@HOST:PORT/DATABASE`
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+4.  **Set up the database:**
+    Ensure you have a running PostgreSQL instance and that the database specified in your `.env` file exists. TypeORM will synchronize the schema automatically on startup.
 
-## Resources
+5.  **Run the development server:**
+    ```bash
+    npm run start:dev
+    ```
+    The API will be available at `http://localhost:3000` (or the port you specified).
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### 📄 License
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
