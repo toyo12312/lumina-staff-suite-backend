@@ -4,28 +4,22 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmployeesModule } from './employers/employers.module';
-// Інші ваші імпорти...
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // Налаштування конфігурації
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
-        // --- ОСНОВНА ЗМІНА ТУТ ---
-        // Видаляємо явне перерахування entities.
-        // autoLoadEntities: true змусить TypeORM автоматично
-        // знаходити всі ваші сутності, зареєстровані через forFeature.
         autoLoadEntities: true,
-        synchronize: true, // Увага: використовуйте true тільки для розробки
+        synchronize: true, 
       }),
       inject: [ConfigService],
     }),
-    // Тепер AppModule просто імпортує інші модулі
     EmployeesModule,
-    // ... інші ваші модулі (DashboardModule, ReportsModule)
+    (DashboardModule, ReportsModule)
   ],
   controllers: [AppController],
   providers: [AppService],
