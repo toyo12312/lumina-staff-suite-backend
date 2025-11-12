@@ -7,7 +7,6 @@ import { EmployeesModule } from './employers/employers.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true}),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
