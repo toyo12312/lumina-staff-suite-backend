@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Brackets } from 'typeorm'; // Додали Brackets
 import { Employee } from './entities/employer.entity';
 import { CreateEmployeeDto } from './dto/create-employer.dto';
 import { UpdateEmployeeDto } from './dto/update-employer.dto';
@@ -17,7 +17,7 @@ export class EmployeesService {
     return this.employeeRepository.save(newEmployee);
   }
 
-  // Оновлена функція для підтримки пошуку та пагінації
+  // Оновлена функція з QueryBuilder для розумного пошуку
   async findAll(query: {
     search?: string;
     page?: number;
@@ -26,17 +26,30 @@ export class EmployeesService {
     const { search = '', page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
-    const [result, total] = await this.employeeRepository.findAndCount({
-      where: [
-        { firstName: Like(`%${search}%`) },
-        { lastName: Like(`%${search}%`) },
-        { email: Like(`%${search}%`) },
-        { position: Like(`%${search}%`) },
-      ],
-      order: { id: 'DESC' }, // За замовчуванням сортуємо за ID
-      take: limit,
-      skip: skip,
-    });
+    // Створюємо будівельник запитів
+    const qb = this.employeeRepository.createQueryBuilder('employee');
+
+    if (search) {
+      qb.where(
+        new Brackets((qb) => {
+          // Пошук по окремих полях (регістронезалежний ILIKE)
+          qb.where('employee.firstName ILIKE :search', { search: `%${search}%` })
+            .orWhere('employee.lastName ILIKE :search', { search: `%${search}%` })
+            .orWhere('employee.email ILIKE :search', { search: `%${search}%` })
+            .orWhere('employee.position ILIKE :search', { search: `%${search}%` })
+            // 🔥 ГОЛОВНЕ: Склеюємо Ім'я + Пробіл + Прізвище
+            .orWhere("CONCAT(employee.firstName, ' ', employee.lastName) ILIKE :search", { search: `%${search}%` });
+        }),
+      );
+    }
+
+    // Сортування та пагінація
+    qb.orderBy('employee.id', 'DESC');
+    qb.skip(skip);
+    qb.take(limit);
+
+    // Отримуємо результат і загальну кількість
+    const [result, total] = await qb.getManyAndCount();
 
     return {
       data: result,
