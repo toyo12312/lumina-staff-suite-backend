@@ -9,9 +9,8 @@ This repository contains the backend API for Lumina Staff Suite. It's a modern, 
 
 ### 🔗 Live API Endpoint
 
-The API is hosted on Render: **[https://your-backend-api-url.onrender.com/](https://your-backend-api-url.onrender.com/)**
+The API is hosted: **[https://employers-backend-528727363440.us-central1.run.app/]/)**
 
-*(Note: The first request might take up to 30 seconds as the free-tier service spins down after inactivity.)*
 
 ---
 
