@@ -9,7 +9,7 @@ This repository contains the backend API for Lumina Staff Suite. It's a modern, 
 
 ### 🔗 Live API Endpoint
 
-The API is hosted: **[https://employers-backend-528727363440.us-central1.run.app/]/)**
+The API is hosted: **https://employers-backend-528727363440.us-central1.run.app/**
 
 
 ---
