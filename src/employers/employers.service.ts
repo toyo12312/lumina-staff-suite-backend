@@ -33,12 +33,21 @@ export class EmployeesService {
       qb.where(
         new Brackets((qb) => {
           // Пошук по окремих полях (регістронезалежний ILIKE)
-          qb.where('employee.firstName ILIKE :search', { search: `%${search}%` })
-            .orWhere('employee.lastName ILIKE :search', { search: `%${search}%` })
+          qb.where('employee.firstName ILIKE :search', {
+            search: `%${search}%`,
+          })
+            .orWhere('employee.lastName ILIKE :search', {
+              search: `%${search}%`,
+            })
             .orWhere('employee.email ILIKE :search', { search: `%${search}%` })
-            .orWhere('employee.position ILIKE :search', { search: `%${search}%` })
+            .orWhere('employee.position ILIKE :search', {
+              search: `%${search}%`,
+            })
             // 🔥 ГОЛОВНЕ: Склеюємо Ім'я + Пробіл + Прізвище
-            .orWhere("CONCAT(employee.firstName, ' ', employee.lastName) ILIKE :search", { search: `%${search}%` });
+            .orWhere(
+              "CONCAT(employee.firstName, ' ', employee.lastName) ILIKE :search",
+              { search: `%${search}%` },
+            );
         }),
       );
     }

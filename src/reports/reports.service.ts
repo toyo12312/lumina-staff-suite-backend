@@ -10,7 +10,6 @@ export class ReportsService {
     private employeeRepository: Repository<Employee>,
   ) {}
 
-  // Метод для генерації простого звіту
   async getSomeReport() {
     const employees = await this.employeeRepository.find({
       select: ['id', 'firstName', 'lastName', 'position', 'status'],

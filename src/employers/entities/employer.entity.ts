@@ -1,36 +1,35 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-// Використовуємо той самий Enum, що й на фронтенді для консистентності
 export enum EmployeeStatus {
   Active = 'active',
   OnLeave = 'on_leave',
   Terminated = 'terminated',
 }
 
-@Entity('employees') // Вказує, що цей клас відповідає таблиці 'employees'
+@Entity('employees')
 export class Employee {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  firstName: string;
+  firstName!: string;
 
   @Column()
-  lastName: string;
+  lastName!: string;
 
   @Column()
-  position: string;
+  position!: string;
 
-  @Column({ unique: true }) // Email має бути унікальним
-  email: string;
+  @Column({ unique: true })
+  email!: string;
 
   @Column({
     type: 'enum',
     enum: EmployeeStatus,
     default: EmployeeStatus.Active,
   })
-  status: EmployeeStatus;
+  status!: EmployeeStatus;
 
   @Column({ type: 'date' })
-  hireDate: string;
+  hireDate!: string;
 }

@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EmployeesModule } from './employers/employers.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -14,12 +16,13 @@ import { EmployeesModule } from './employers/employers.module';
         type: 'postgres',
         url: configService.get('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, 
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),
     EmployeesModule,
-    (DashboardModule, ReportsModule)
+    DashboardModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
