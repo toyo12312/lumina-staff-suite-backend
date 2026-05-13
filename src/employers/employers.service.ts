@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Brackets } from 'typeorm'; // Додали Brackets
+import { Repository, Brackets } from 'typeorm';
 import { Employee } from './entities/employer.entity';
 import { CreateEmployeeDto } from './dto/create-employer.dto';
 import { UpdateEmployeeDto } from './dto/update-employer.dto';
@@ -17,22 +17,24 @@ export class EmployeesService {
     return this.employeeRepository.save(newEmployee);
   }
 
-  // Оновлена функція з QueryBuilder для розумного пошуку
   async findAll(query: {
     search?: string;
     page?: number;
     limit?: number;
-  }): Promise<{ data: Employee[]; total: number }> {
+  }): Promise<{
+    data: Employee[];
+    total: number;
+    page: number;
+    lastPage: number;
+  }> {
     const { search = '', page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
 
-    // Створюємо будівельник запитів
     const qb = this.employeeRepository.createQueryBuilder('employee');
 
     if (search) {
       qb.where(
         new Brackets((qb) => {
-          // Пошук по окремих полях (регістронезалежний ILIKE)
           qb.where('employee.firstName ILIKE :search', {
             search: `%${search}%`,
           })
@@ -43,7 +45,6 @@ export class EmployeesService {
             .orWhere('employee.position ILIKE :search', {
               search: `%${search}%`,
             })
-            // 🔥 ГОЛОВНЕ: Склеюємо Ім'я + Пробіл + Прізвище
             .orWhere(
               "CONCAT(employee.firstName, ' ', employee.lastName) ILIKE :search",
               { search: `%${search}%` },
@@ -52,17 +53,17 @@ export class EmployeesService {
       );
     }
 
-    // Сортування та пагінація
     qb.orderBy('employee.id', 'DESC');
     qb.skip(skip);
     qb.take(limit);
 
-    // Отримуємо результат і загальну кількість
     const [result, total] = await qb.getManyAndCount();
 
     return {
       data: result,
       total: total,
+      page: Number(page),
+      lastPage: Math.ceil(total / limit),
     };
   }
 
