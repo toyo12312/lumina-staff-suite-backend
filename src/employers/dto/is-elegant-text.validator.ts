@@ -32,6 +32,8 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
       /говно/,
       /гандон/,
       /хуесос/,
+      /dоlboеb/,
+      /порно/,
     ];
 
     const hasForbiddenWord = forbiddenPatterns.some((pattern) =>
