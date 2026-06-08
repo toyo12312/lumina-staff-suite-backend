@@ -14,43 +14,42 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
     const isAllCaps = text.length > 3 && text === text.toUpperCase();
     if (isAllCaps) return false;
 
-    const lowerText = text.toLowerCase();
-    const forbiddenWords = [
-      'мать ебал',
-      'уеба',
-      'залуп',
-      'хуй',
-      'хуе',
-      'хуё',
-      'пизд',
-      'бля',
-      'сука',
-      'пидар',
-      'пидор',
-      'pidar',
-      'pidor',
-      'шлюх',
-      'даун',
-      'admin',
-      'test',
-      'qwerty',
-      'asdasd',
-      '123123',
+    const cleanText = text.toLowerCase().replace(/[^а-яa-zёієї]/g, '');
+
+    const forbiddenPatterns = [
+      /мать/,
+      /ебал/,
+      /уеб/,
+      /залуп/,
+      /ху[йіеё]/,
+      /пизд/,
+      /бля/,
+      /сук[ау]/,
+      /пид[ао]р/,
+      /pid[ao]r/,
+      /шлюх/,
+      /даун/,
+      /говно/,
+      /гандон/,
+      /хуесос/,
     ];
 
-    const hasForbiddenWord = forbiddenWords.some((word) =>
-      lowerText.includes(word),
+    const hasForbiddenWord = forbiddenPatterns.some((pattern) =>
+      pattern.test(cleanText),
     );
     if (hasForbiddenWord) return false;
 
-    const tooManyConsonants = /[бвгджзйклмнпрстфхцчшщ]{5,}/i.test(lowerText);
+    const adminSpam = /admin|test|qwerty|asdasd|123123/.test(cleanText);
+    if (adminSpam) return false;
+
+    const tooManyConsonants = /[бвгджзйклмнпрстфхцчшщ]{6,}/i.test(text);
     if (tooManyConsonants) return false;
 
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Ми високо оцінили вашу експресію та креативність, але поле "${args.property}" має містити реальні дані у коректному регістрі та без нецензурної лексики.`;
+    return `Ми високо оцінили вашу експресію, але поле "${args.property}" має містити коректні дані без нецензурної лексики.`;
   }
 }
 
