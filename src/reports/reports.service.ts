@@ -14,7 +14,7 @@ export class ReportsService {
     const employees = await this.employeeRepository.find({
       select: ['id', 'firstName', 'lastName', 'position', 'status'],
       order: {
-        lastName: 'ASC', // Сортуємо за прізвищем
+        lastName: 'ASC',
       },
     });
     return employees;

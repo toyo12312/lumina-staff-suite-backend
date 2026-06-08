@@ -5,7 +5,7 @@ import { EmployeesController } from './employers.controller';
 import { Employee } from './entities/employer.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Employee])], // Реєструємо нашу Entity
+  imports: [TypeOrmModule.forFeature([Employee])],
   controllers: [EmployeesController],
   providers: [EmployeesService],
 })

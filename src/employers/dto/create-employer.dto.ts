@@ -9,24 +9,24 @@ import {
   MaxLength,
 } from 'class-validator';
 import { EmployeeStatus } from '../entities/employer.entity';
+import { IsElegantText } from './is-elegant-text.validator';
 
 export class CreateEmployeeDto {
   @IsString({ message: 'errors.validation.isString' })
   @IsNotEmpty({ message: 'errors.validation.isNotEmpty' })
   @MinLength(2, { message: 'errors.validation.minLength' })
   @MaxLength(50, { message: 'errors.validation.maxLength' })
-  @Matches(/^[а-яА-ЯєЄіІїЇґҐa-zA-Z\s\-']+$/, {
-    message: 'errors.validation.invalidNameFormat',
-  })
+  @IsElegantText({ message: 'errors.validation.invalidNameFormat' })
   firstName!: string;
 
   @IsString({ message: 'errors.validation.isString' })
   @IsNotEmpty({ message: 'errors.validation.isNotEmpty' })
   @MinLength(2, { message: 'errors.validation.minLength' })
   @MaxLength(50, { message: 'errors.validation.maxLength' })
-  @Matches(/^[а-яА-ЯєЄіІїЇґҐa-zA-Z\s\-']+$/, {
+  @Matches(/^[a-zA-Zа-яА-ЯєЄіІїЇґҐ\s\-']+$/, {
     message: 'errors.validation.invalidNameFormat',
   })
+  @IsElegantText() // Захист від тролів
   lastName!: string;
 
   @IsString({ message: 'errors.validation.isString' })
