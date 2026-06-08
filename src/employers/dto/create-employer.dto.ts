@@ -26,7 +26,7 @@ export class CreateEmployeeDto {
   @Matches(/^[a-zA-Zа-яА-ЯєЄіІїЇґҐ\s\-']+$/, {
     message: 'errors.validation.invalidNameFormat',
   })
-  @IsElegantText() // Захист від тролів
+  @IsElegantText()
   lastName!: string;
 
   @IsString({ message: 'errors.validation.isString' })
