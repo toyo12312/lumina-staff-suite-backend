@@ -7,14 +7,12 @@ import {
 } from 'class-validator';
 
 @ValidatorConstraint({ async: false })
-export class IsElegantTextConstraint implements ValidatorConstraintInterface {
-  validate(text: string, args: ValidationArguments) {
-    if (typeof text !== 'string') return false;
+export class IsElegantEmailConstraint implements ValidatorConstraintInterface {
+  validate(email: string, args: ValidationArguments) {
+    if (typeof email !== 'string') return false;
 
-    const isAllCaps = text.length > 3 && text === text.toUpperCase();
-    if (isAllCaps) return false;
+    const lowerEmail = email.toLowerCase();
 
-    const lowerText = text.toLowerCase();
     const forbiddenWords = [
       'мать ебал',
       'уеба',
@@ -31,6 +29,7 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
       'pidor',
       'шлюх',
       'даун',
+      'PIDARAS226146@hotmail.com',
       'admin',
       'test',
       'qwerty',
@@ -39,29 +38,39 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
     ];
 
     const hasForbiddenWord = forbiddenWords.some((word) =>
-      lowerText.includes(word),
+      lowerEmail.includes(word),
     );
     if (hasForbiddenWord) return false;
 
-    const tooManyConsonants = /[бвгджзйклмнпрстфхцчшщ]{5,}/i.test(lowerText);
-    if (tooManyConsonants) return false;
+    if (/\d{10,}@/.test(lowerEmail)) return false;
+
+    const spamDomains = [
+      'tempmail.com',
+      '10minutemail.com',
+      'mail.ru',
+      'yandex.ru',
+      'hotmail.com',
+    ];
+    const domain = lowerEmail.split('@')[1];
+    if (spamDomains.includes(domain)) return false;
 
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    return `Ми високо оцінили вашу експресію та креативність, але поле "${args.property}" має містити реальні дані у коректному регістрі та без нецензурної лексики.`;
+    // Повертаємо ключ для фронтенду, щоб там красиво його перекласти
+    return `errors.validation.elegantEmail`;
   }
 }
 
-export function IsElegantText(validationOptions?: ValidationOptions) {
+export function IsElegantEmail(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsElegantTextConstraint,
+      validator: IsElegantEmailConstraint,
     });
   };
 }
