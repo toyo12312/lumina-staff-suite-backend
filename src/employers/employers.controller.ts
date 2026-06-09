@@ -18,7 +18,7 @@ import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 1, ttl: 60000 } })
+  @Throttle({ default: { limit: 2, ttl: 60000 } })
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
