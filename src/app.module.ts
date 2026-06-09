@@ -1,4 +1,9 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import {
+  Module,
+  MiddlewareConsumer,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -44,6 +49,8 @@ import { BlockBotMiddleware } from './common/middlewares/user-agent.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(BlockBotMiddleware).forRoutes('*');
+    consumer
+      .apply(BlockBotMiddleware)
+      .forRoutes({ path: 'employees', method: RequestMethod.POST });
   }
 }
