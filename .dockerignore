@@ -3,3 +3,6 @@ dist
 npm-debug.log
 .git
 .env
+node_modules
+dist
+tsconfig.build.tsbuildinfo
