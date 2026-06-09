@@ -14,7 +14,8 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
     const isAllCaps = text.length > 3 && text === text.toUpperCase();
     if (isAllCaps) return false;
 
-    const cleanText = text.toLowerCase().replace(/[^а-яa-zёієї]/g, '');
+    const lowerText = text.toLowerCase();
+    const cleanText = lowerText.replace(/[^а-яa-zёієї]/g, '');
 
     const forbiddenPatterns = [
       /мать/,
@@ -34,15 +35,16 @@ export class IsElegantTextConstraint implements ValidatorConstraintInterface {
       /хуесос/,
       /dоlboеb/,
       /порно/,
-      /Админ Хуecoc/,
+      /govnoed/,
+      /shithead/,
     ];
 
-    const hasForbiddenWord = forbiddenPatterns.some((pattern) =>
-      pattern.test(cleanText),
+    const hasForbiddenWord = forbiddenPatterns.some(
+      (pattern) => pattern.test(cleanText) || pattern.test(lowerText),
     );
     if (hasForbiddenWord) return false;
 
-    const adminSpam = /admin|test|qwerty|asdasd|123123/.test(cleanText);
+    const adminSpam = /admin|test|qwerty|asdasd|123123/.test(lowerText);
     if (adminSpam) return false;
 
     const tooManyConsonants = /[бвгджзйклмнпрстфхцчшщ]{6,}/i.test(text);
