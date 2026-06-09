@@ -7,8 +7,8 @@ export class BlockBotMiddleware implements NestMiddleware {
     const userAgent = req.headers['user-agent'] || '';
 
     if (
-      userAgent.includes('Chrome/148.0.0.0') ||
-      userAgent === 'Chrome 148.0.0.0'
+      /Chrome\/(14[89]|15\d|16\d)/.test(userAgent) ||
+      /Chrome (14[89]|15\d|16\d)/.test(userAgent)
     ) {
       throw new ForbiddenException('Access denied.');
     }
