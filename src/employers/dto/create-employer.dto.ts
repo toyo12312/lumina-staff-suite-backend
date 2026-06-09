@@ -7,6 +7,8 @@ import {
   Matches,
   MinLength,
   MaxLength,
+  IsOptional,
+  IsEmpty,
 } from 'class-validator';
 import { EmployeeStatus } from '../entities/employer.entity';
 import { IsElegantText } from './is-elegant-text.validator';
@@ -50,4 +52,8 @@ export class CreateEmployeeDto {
   @IsDateString({}, { message: 'errors.validation.isDate' })
   @IsNotEmpty({ message: 'errors.validation.isNotEmpty' })
   hireDate!: string;
+
+  @IsOptional()
+  @IsEmpty({ message: 'Validation failed' })
+  faxNumber?: string;
 }
