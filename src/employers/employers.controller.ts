@@ -12,11 +12,11 @@ import {
 import { EmployeesService } from './employers.service';
 import { CreateEmployeeDto } from './dto/create-employer.dto';
 import { UpdateEmployeeDto } from './dto/update-employer.dto';
-
-@Controller('employees') // Всі маршрути будуть починатися з /employees
+import { Throttle } from '@nestjs/throttler';
+@Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
-
+  @Throttle({ default: { limit: 1, ttl: 60000 } })
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
