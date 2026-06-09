@@ -13,11 +13,15 @@ import {
 import { EmployeeStatus } from '../entities/employer.entity';
 import { IsElegantText } from './is-elegant-text.validator';
 import { IsElegantEmail } from './is-elegant-email.validator';
+
 export class CreateEmployeeDto {
   @IsString({ message: 'errors.validation.isString' })
   @IsNotEmpty({ message: 'errors.validation.isNotEmpty' })
   @MinLength(2, { message: 'errors.validation.minLength' })
   @MaxLength(50, { message: 'errors.validation.maxLength' })
+  @Matches(/^[a-zA-Zа-яА-ЯєЄіІїЇґҐ\s\-']+$/, {
+    message: 'errors.validation.invalidNameFormat',
+  })
   @IsElegantText({ message: 'errors.validation.invalidNameFormat' })
   firstName!: string;
 
@@ -46,7 +50,6 @@ export class CreateEmployeeDto {
 
   @IsEnum(EmployeeStatus, { message: 'errors.validation.isEnum' })
   @IsNotEmpty({ message: 'errors.validation.isNotEmpty' })
-  @IsElegantText()
   status!: EmployeeStatus;
 
   @IsDateString({}, { message: 'errors.validation.isDate' })
