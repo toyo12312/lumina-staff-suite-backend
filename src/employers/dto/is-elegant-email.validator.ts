@@ -1,76 +1,47 @@
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
   ValidationArguments,
+  registerDecorator,
+  ValidationOptions,
 } from 'class-validator';
+import { FORBIDDEN_WORDS_PATTERNS } from '../constants/forbidden-words.constant';
 
-@ValidatorConstraint({ async: false })
-export class IsElegantEmailConstraint implements ValidatorConstraintInterface {
-  validate(email: string, args: ValidationArguments) {
-    if (typeof email !== 'string') return false;
+@ValidatorConstraint({ name: 'isElegantText', async: false })
+export class IsElegantTextConstraint implements ValidatorConstraintInterface {
+  validate(text: string, args: ValidationArguments) {
+    if (typeof text !== 'string') return false;
 
-    const lowerEmail = email.toLowerCase();
+    const lowerText = text.toLowerCase();
+    const cleanText = text.replace(/[^a-zA-Zа-яА-Я0-9]/g, '');
 
-    const forbiddenWords = [
-      'мать ебал',
-      'уеба',
-      'залуп',
-      'хуй',
-      'хуе',
-      'хуё',
-      'пизд',
-      'бля',
-      'сука',
-      'пидар',
-      'пидор',
-      'pidar',
-      'pidor',
-      'шлюх',
-      'даун',
-      'PIDARAS226146@hotmail.com',
-      'admin',
-      'test',
-      'qwerty',
-      'asdasd',
-      '123123',
-    ];
-
-    const hasForbiddenWord = forbiddenWords.some((word) =>
-      lowerEmail.includes(word),
+    const hasForbiddenWord = FORBIDDEN_WORDS_PATTERNS.some(
+      (pattern) =>
+        pattern.test(cleanText) ||
+        pattern.test(lowerText) ||
+        pattern.test(text),
     );
-    if (hasForbiddenWord) return false;
 
-    if (/\d{10,}@/.test(lowerEmail)) return false;
-
-    const spamDomains = [
-      'tempmail.com',
-      '10minutemail.com',
-      'mail.ru',
-      'yandex.ru',
-      'hotmail.com',
-    ];
-    const domain = lowerEmail.split('@')[1];
-    if (spamDomains.includes(domain)) return false;
+    if (hasForbiddenWord) {
+      return false;
+    }
 
     return true;
   }
 
   defaultMessage(args: ValidationArguments) {
-    // Повертаємо ключ для фронтенду, щоб там красиво його перекласти
-    return `errors.validation.elegantEmail`;
+    return `Field ${args.property} contains forbidden words.`;
   }
 }
 
-export function IsElegantEmail(validationOptions?: ValidationOptions) {
+export function IsElegantText(validationOptions?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsElegantEmailConstraint,
+      validator: IsElegantTextConstraint,
     });
   };
 }
