@@ -49,10 +49,8 @@ import { BlockBotMiddleware } from './common/middlewares/user-agent.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // Тимчасово вимикаємо мідлвару, щоб пускати реальних користувачів.
-    // DTO та Honeypot все одно захистять нас від бота!
-    // consumer
-    //   .apply(BlockBotMiddleware)
-    //   .forRoutes({ path: 'employees', method: RequestMethod.POST });
+    consumer
+      .apply(BlockBotMiddleware)
+      .forRoutes({ path: 'employees', method: RequestMethod.POST });
   }
 }
