@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
-import { EmployeesModule } from './employers/employers.module';
+import { EmployersModule } from './employers/employers.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ReportsModule } from './reports/reports.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
@@ -36,7 +36,7 @@ import { BlockBotMiddleware } from './common/middlewares/user-agent.middleware';
       }),
       inject: [ConfigService],
     }),
-    EmployeesModule,
+    EmployersModule,
     DashboardModule,
     ReportsModule,
   ],
