@@ -9,6 +9,7 @@ import {
   MaxLength,
   IsOptional,
   IsEmpty,
+  IsNumber,
 } from 'class-validator';
 import { EmployeeStatus } from '../entities/employer.entity';
 import { IsElegantText } from './is-elegant-text.validator';
@@ -59,4 +60,12 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsEmpty({ message: 'Validation failed' })
   faxNumber?: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  captchaAnswer!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  captchaToken!: string;
 }

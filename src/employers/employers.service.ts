@@ -1,20 +1,102 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Brackets } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Employee } from './entities/employer.entity';
 import { CreateEmployeeDto } from './dto/create-employer.dto';
 import { UpdateEmployeeDto } from './dto/update-employer.dto';
 
 @Injectable()
-export class EmployeesService {
+export class EmployersService {
+  private readonly logger = new Logger(EmployersService.name);
+  private activeCaptchas = new Map<
+    string,
+    { answer: number; expires: number }
+  >();
+
   constructor(
     @InjectRepository(Employee)
     private readonly employeeRepository: Repository<Employee>,
   ) {}
 
+  generateCaptcha() {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    const operator = Math.random() > 0.5 ? '+' : '-';
+
+    let answer = 0;
+    if (operator === '+') {
+      answer = num1 + num2;
+    } else {
+      answer = num1 >= num2 ? num1 - num2 : num2 - num1;
+    }
+
+    const token = Math.random().toString(36).substring(2);
+    const question =
+      operator === '+'
+        ? `${num1} + ${num2} = ?`
+        : `${Math.max(num1, num2)} - ${Math.min(num1, num2)} = ?`;
+    const finalAnswer =
+      operator === '+' ? answer : Math.max(num1, num2) - Math.min(num1, num2);
+
+    this.activeCaptchas.set(token, {
+      answer: finalAnswer,
+      expires: Date.now() + 5 * 60 * 1000,
+    });
+
+    return { token, question };
+  }
+
   async create(createEmployeeDto: CreateEmployeeDto): Promise<Employee> {
+    const { captchaToken, captchaAnswer, position, email } = createEmployeeDto;
+
+    if (!captchaToken || !this.activeCaptchas.has(captchaToken)) {
+      throw new BadRequestException('errors.validation.invalidCaptcha');
+    }
+
+    const captchaData = this.activeCaptchas.get(captchaToken);
+    this.activeCaptchas.delete(captchaToken);
+
+    if (Date.now() > captchaData!.expires) {
+      throw new BadRequestException('errors.validation.expiredCaptcha');
+    }
+
+    if (Number(captchaAnswer) !== captchaData!.answer) {
+      throw new BadRequestException('errors.validation.incorrectCaptcha');
+    }
+
+    if (
+      position?.toLowerCase() === 'shithead' ||
+      email?.includes('larry_po_opeater')
+    ) {
+      throw new BadRequestException('errors.validation.spamDetected');
+    }
+
     const newEmployee = this.employeeRepository.create(createEmployeeDto);
     return this.employeeRepository.save(newEmployee);
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  async handleSpamCleanup() {
+    this.logger.debug('Running automated spam cleanup...');
+    try {
+      await this.employeeRepository
+        .createQueryBuilder()
+        .delete()
+        .where('position ILIKE :pos OR email ILIKE :mail', {
+          pos: '%shithead%',
+          mail: '%larry_po_opeater%',
+        })
+        .execute();
+      this.logger.debug('Spam cleanup completed successfully.');
+    } catch (error) {
+      this.logger.error('Error during automated spam cleanup:', error);
+    }
   }
 
   async findAll(query: {

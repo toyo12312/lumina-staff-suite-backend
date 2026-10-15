@@ -10,18 +10,25 @@ import {
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
-import { EmployeesService } from './employers.service';
+import { EmployersService } from './employers.service';
 import { CreateEmployeeDto } from './dto/create-employer.dto';
 import { UpdateEmployeeDto } from './dto/update-employer.dto';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
+
 @Controller('employees')
 export class EmployeesController {
-  constructor(private readonly employeesService: EmployeesService) {}
+  constructor(private readonly employersService: EmployersService) {}
+
+  @Get('captcha')
+  getCaptcha() {
+    return this.employersService.generateCaptcha();
+  }
+
   @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.employeesService.create(createEmployeeDto);
+    return this.employersService.create(createEmployeeDto);
   }
 
   @Get()
@@ -32,7 +39,7 @@ export class EmployeesController {
   ) {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 10;
-    return this.employeesService.findAll({
+    return this.employersService.findAll({
       search,
       page: pageNum,
       limit: limitNum,
@@ -41,7 +48,7 @@ export class EmployeesController {
 
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.employeesService.findOne(id);
+    return this.employersService.findOne(id);
   }
 
   @Patch(':id')
@@ -49,11 +56,11 @@ export class EmployeesController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
   ) {
-    return this.employeesService.update(id, updateEmployeeDto);
+    return this.employersService.update(id, updateEmployeeDto);
   }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.employeesService.remove(id);
+    return this.employersService.remove(id);
   }
 }
