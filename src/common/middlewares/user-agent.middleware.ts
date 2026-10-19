@@ -4,9 +4,9 @@ import { Request, Response, NextFunction } from 'express';
 @Injectable()
 export class BlockBotMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    const secretHeader = req.headers['x-lumina-secret'];
+    const secretHeader = req.headers['x-lumina-client-secret'];
 
-    if (secretHeader === 'super-safe-lumina-2026') {
+    if (secretHeader === process.env.FRONTEND_CLIENT_SECRET) {
       return next();
     }
 
