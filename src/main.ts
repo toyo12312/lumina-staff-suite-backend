@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as basicAuth from 'express-basic-auth';
+import basicAuth = require('express-basic-auth');
 import { ClientSecretGuard } from './common/guards/client-secret.guard';
 
 async function bootstrap() {
