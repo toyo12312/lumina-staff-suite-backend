@@ -2,10 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as basicAuth from 'express-basic-auth';
+import { ClientSecretGuard } from './common/guards/client-secret.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
   app.use(helmet());
+
+  app.use(
+    ['/api/docs', '/api/docs-json'],
+    basicAuth({
+      challenge: true,
+      users: {
+        admin: process.env.SWAGGER_PASSWORD || 'admin',
+      },
+    }),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -21,6 +35,18 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  app.useGlobalGuards(new ClientSecretGuard());
+
+  const config = new DocumentBuilder()
+    .setTitle('Lumina Staff Suite API')
+    .setDescription('Lumina API documentation')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT || 8080;
   await app.listen(port, '0.0.0.0');
